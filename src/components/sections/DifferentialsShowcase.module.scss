@@ -1,0 +1,681 @@
+@use "mixins" as *;
+
+// Demonstrativo "em vídeo": capítulos (esquerda) + tela de vidro com cena (direita)
+.showcase {
+  display: grid;
+  gap: var(--space-6);
+
+  @include up(lg) {
+    grid-template-columns: 5fr 7fr;
+    gap: var(--space-8);
+    align-items: stretch;
+  }
+}
+
+// pausa todas as animações (hover, foco ou botão)
+.paused,
+.paused * {
+  animation-play-state: paused !important;
+}
+
+// ---------- Capítulos ----------
+.chapters {
+  display: grid;
+  gap: var(--space-2);
+  align-content: center;
+  order: 2;
+
+  @include up(lg) {
+    order: 0;
+  }
+}
+
+.chapter {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-4);
+  align-items: start;
+  padding: var(--space-4) var(--space-4) var(--space-5, 1.25rem);
+  border-radius: var(--radius-md);
+  text-align: left;
+  color: var(--color-text-muted);
+  transition:
+    background-color var(--duration-base),
+    color var(--duration-base);
+
+  @include hover {
+    background: rgb(255 255 255 / 0.03);
+    color: var(--color-text);
+  }
+}
+
+.chapterActive {
+  color: var(--color-text);
+  @include glass(base);
+}
+
+.chapterIcon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-subtle);
+  background: rgb(255 255 255 / 0.04);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  transition:
+    color var(--duration-base),
+    background-color var(--duration-base),
+    box-shadow var(--duration-base);
+
+  .chapterActive & {
+    color: var(--white);
+    background: var(--color-accent);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.35),
+      0 0 22px -4px rgb(139 92 246 / 0.7);
+  }
+}
+
+.chapterText {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.chapterTitle {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+}
+
+// descrição só aparece no capítulo ativo (mantém a lista curta)
+.chapterDesc {
+  display: grid;
+  grid-template-rows: 0fr;
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  opacity: 0;
+  max-height: 0;
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    max-height var(--duration-slow) var(--ease-out);
+
+  .chapterActive & {
+    opacity: 1;
+    max-height: 6em;
+  }
+}
+
+.progress {
+  position: absolute;
+  left: var(--space-4);
+  right: var(--space-4);
+  bottom: 8px;
+  height: 2px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 0.06);
+
+  .chapter:not(.chapterActive) & {
+    opacity: 0;
+  }
+}
+
+.progressBar {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--violet-500), var(--violet-300));
+  box-shadow: 0 0 10px rgb(139 92 246 / 0.8);
+  transform-origin: left;
+  animation: progress var(--chapter) linear both;
+}
+
+@keyframes progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+// ---------- Tela ----------
+.screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+  overflow: hidden;
+  @include glass(strong, $sheen: true);
+
+  @include up(lg) {
+    min-height: 420px;
+  }
+}
+
+.screenBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 40px;
+  padding: 0 var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-subtle);
+}
+
+.rec {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 10px rgb(239 68 68 / 0.8);
+  animation: blink 1.6s ease-in-out infinite;
+
+  .paused & {
+    background: var(--color-text-subtle);
+    box-shadow: none;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.screenLabel {
+  margin-left: auto;
+  margin-right: 40px;
+}
+
+.stage {
+  position: relative;
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+  // fundo de "tela": leve grade técnica
+  background-image:
+    radial-gradient(circle at 50% 120%, rgb(139 92 246 / 0.18), transparent 60%),
+    radial-gradient(rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    18px 18px;
+}
+
+.playToggle {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--color-text);
+  background: rgb(255 255 255 / 0.08);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12);
+
+  @include hover {
+    background: rgb(255 255 255 / 0.16);
+  }
+}
+
+// ---------- Animações compartilhadas pelas cenas ----------
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+
+@keyframes fade-only {
+  from {
+    opacity: 0;
+  }
+}
+
+@mixin appear($name: pop, $dur: 500ms) {
+  animation: $name $dur var(--ease-out) var(--d, 0s) both;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+// ---------- Cena 1: chat ----------
+.chat {
+  display: grid;
+  gap: var(--space-3);
+  width: min(440px, 100%);
+}
+
+.chatHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  @include appear(fade-only);
+
+  span:last-child {
+    display: grid;
+    font-size: var(--text-sm);
+  }
+
+  small {
+    color: var(--color-success);
+    font-size: var(--text-xs);
+  }
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.bubble {
+  max-width: 82%;
+  padding: var(--space-3) var(--space-4);
+  border-radius: 18px;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  @include appear;
+}
+
+.bubbleIn {
+  justify-self: end;
+  border-bottom-right-radius: 6px;
+  background: rgb(255 255 255 / 0.1);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.1);
+}
+
+.bubbleOut {
+  justify-self: start;
+  border-bottom-left-radius: 6px;
+  background: linear-gradient(180deg, #9a72ff, var(--violet-500));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3);
+}
+
+.typing {
+  display: flex;
+  gap: 4px;
+  width: max-content;
+  padding: var(--space-3) var(--space-4);
+  border-radius: 18px;
+  background: rgb(255 255 255 / 0.06);
+  animation:
+    pop 300ms var(--ease-out) var(--d) both,
+    hide 200ms linear calc(var(--d) + 1s) forwards;
+
+  i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-text-muted);
+    animation: dot 900ms ease-in-out infinite;
+
+    &:nth-child(2) {
+      animation-delay: 150ms;
+    }
+    &:nth-child(3) {
+      animation-delay: 300ms;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    display: none;
+  }
+}
+
+@keyframes hide {
+  to {
+    opacity: 0;
+    height: 0;
+    padding-block: 0;
+    margin-top: -12px;
+  }
+}
+
+@keyframes dot {
+  50% {
+    transform: translateY(-3px);
+    opacity: 0.5;
+  }
+}
+
+// ---------- Cena 2: relógio 24h ----------
+.clock {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-8);
+  align-items: center;
+  width: min(520px, 100%);
+  position: relative;
+
+  @include down(sm) {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: var(--space-6);
+  }
+}
+
+.ring {
+  grid-area: 1 / 1;
+  width: 150px;
+  height: 150px;
+  transform: rotate(-90deg);
+}
+
+.ringTrack {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.08);
+  stroke-width: 8;
+}
+
+.ringFill {
+  fill: none;
+  stroke: var(--violet-500);
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 0;
+  filter: drop-shadow(0 0 6px rgb(139 92 246 / 0.8));
+  animation: ring 4.8s var(--ease-in-out) 0.2s both;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes ring {
+  from {
+    stroke-dashoffset: 100;
+  }
+}
+
+.ringLabel {
+  grid-area: 1 / 1;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+
+  strong {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 500;
+    letter-spacing: -0.04em;
+  }
+
+  small {
+    max-width: 10ch;
+    font-size: 0.6875rem;
+    color: var(--color-text-subtle);
+  }
+}
+
+.steps {
+  display: grid;
+  gap: var(--space-3);
+
+  @include down(sm) {
+    grid-area: 2 / 1;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-sm);
+    @include appear;
+
+    &:last-child {
+      color: var(--color-success);
+      font-weight: 500;
+    }
+  }
+}
+
+.check {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  background: rgb(34 197 94 / 0.15);
+  color: var(--color-success);
+  box-shadow: inset 0 0 0 1px rgb(34 197 94 / 0.35);
+}
+
+// ---------- Cena 3: identidade (troca de marca) ----------
+.identity {
+  position: relative;
+  width: min(460px, 100%);
+  aspect-ratio: 16 / 10;
+}
+
+.brand {
+  position: absolute;
+  inset: 0 0 28px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 10px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--c2);
+  color: var(--ink);
+  box-shadow: 0 20px 40px -16px rgb(0 0 0 / 0.6);
+  opacity: 0;
+  animation: brand-swap 2.1s var(--ease-in-out) var(--d) both;
+
+  &:last-of-type {
+    animation-name: brand-last;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 0;
+
+    &:first-child {
+      opacity: 1;
+    }
+  }
+}
+
+@keyframes brand-swap {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  15%,
+  85% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.99);
+  }
+}
+
+@keyframes brand-last {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  15%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.mockNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mockLogo {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--c1);
+}
+
+.mockLinks {
+  display: flex;
+  gap: 6px;
+
+  i {
+    width: 26px;
+    height: 5px;
+    border-radius: 3px;
+    background: currentColor;
+    opacity: 0.25;
+  }
+}
+
+.mockHero {
+  display: grid;
+  align-content: center;
+  gap: 8px;
+}
+
+.mockTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+.mockLine {
+  width: 80%;
+  height: 6px;
+  border-radius: 3px;
+  background: currentColor;
+  opacity: 0.2;
+}
+
+.mockBtn {
+  width: 84px;
+  height: 22px;
+  margin-top: 4px;
+  border-radius: 99px;
+  background: var(--c1);
+}
+
+.mockCards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+
+  i {
+    height: 26px;
+    border-radius: 6px;
+    background: var(--c1);
+    opacity: 0.25;
+  }
+}
+
+.identityTag {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-text-subtle);
+}
+
+// ---------- Cena 4: log de suporte ----------
+.log {
+  width: min(500px, 100%);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+
+  ul {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  li {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: var(--space-3);
+    align-items: center;
+    padding: var(--space-3);
+    border-radius: var(--radius-sm);
+    background: rgb(255 255 255 / 0.04);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05);
+    @include appear;
+  }
+}
+
+.logHead {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+}
+
+.logLive {
+  color: var(--color-success);
+
+  &::before {
+    content: "● ";
+  }
+}
+
+.logTag {
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+}
+
+.tag_fix {
+  background: rgb(34 197 94 / 0.15);
+  color: #86efac;
+}
+
+.tag_feat {
+  background: rgb(139 92 246 / 0.2);
+  color: var(--violet-300);
+}
+
+.tag_perf {
+  background: rgb(56 189 248 / 0.15);
+  color: #7dd3fc;
+}
+
+.tag_ops {
+  background: rgb(255 255 255 / 0.08);
+  color: var(--color-text-muted);
+}
+
+.logText {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+}
+
+.logTime {
+  color: var(--color-text-subtle);
+}

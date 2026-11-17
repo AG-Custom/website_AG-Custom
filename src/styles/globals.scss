@@ -1,0 +1,218 @@
+@use "tokens";
+@use "mixins" as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + var(--space-6));
+  color-scheme: dark;
+
+  @include motion {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+main {
+  flex: 1;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: var(--leading-snug);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+:focus-visible {
+  @include focus-ring;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--white);
+}
+
+// ---------- Luz ambiente ----------
+// Camada fixa atrás de tudo: dá ao vidro algo para "refratar".
+// Gradientes radiais (sem filter: blur) = barato para a GPU.
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    width: 70vmax;
+    height: 70vmax;
+    border-radius: 50%;
+  }
+
+  &::before {
+    top: -30vmax;
+    right: -20vmax;
+    background: radial-gradient(circle, var(--ambient-indigo), transparent 62%);
+  }
+
+  &::after {
+    bottom: -35vmax;
+    left: -25vmax;
+    background: radial-gradient(circle, var(--ambient-violet), transparent 60%);
+  }
+
+  @include motion {
+    &::before {
+      animation: drift-a 38s var(--ease-in-out) infinite alternate;
+    }
+
+    &::after {
+      animation: drift-b 46s var(--ease-in-out) infinite alternate;
+    }
+  }
+}
+
+@keyframes drift-a {
+  to {
+    transform: translate(-12vmax, 14vmax);
+  }
+}
+
+@keyframes drift-b {
+  to {
+    transform: translate(14vmax, -10vmax);
+  }
+}
+
+// Utilitários de vidro para uso pontual (preferir o mixin `glass` nos módulos)
+.glass {
+  @include glass(base, $sheen: true);
+}
+
+.glass-strong {
+  @include glass(strong);
+}
+
+.visually-hidden {
+  @include visually-hidden;
+}
+
+.skip-link {
+  position: fixed;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: 100;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent);
+  color: var(--white);
+  transform: translateY(-200%);
+
+  &:focus-visible {
+    transform: none;
+  }
+}
+
+// Destaque de palavra em títulos (uso controlado do violeta)
+.accent {
+  color: var(--color-accent);
+}
+
+// Enter: animação de entrada em CSS puro para o topo das páginas (acima da dobra).
+// Não depende de JS, então o conteúdo principal aparece na 1ª pintura.
+// Ordem opcional: style={{ "--enter": 2 }}
+@include motion {
+  [data-enter] {
+    animation: enter 900ms var(--ease-out) both;
+    animation-delay: calc(var(--enter, 0) * 110ms + 60ms);
+  }
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+// Reveal: o estado inicial só se aplica quando JS + motion estão disponíveis.
+// `data-revealed` é colocado pelo RevealObserver (atributo que o React não sobrescreve).
+// Se o observer não iniciar em 4s (.reveal-fallback sem .reveal-ready), tudo aparece.
+@include motion {
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity var(--duration-slow) var(--ease-out),
+      transform var(--duration-slow) var(--ease-out);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .js [data-reveal][data-revealed],
+  .js.reveal-fallback:not(.reveal-ready) [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}

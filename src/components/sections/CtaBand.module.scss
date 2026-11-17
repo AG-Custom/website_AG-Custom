@@ -1,0 +1,59 @@
+@use "mixins" as *;
+
+.cta {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding-block: clamp(var(--space-24), 14vw, var(--space-40));
+  border-top: 1px solid var(--color-border);
+  // grade técnica sutil
+  background-image:
+    linear-gradient(var(--color-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+  background-size: 56px 56px;
+  background-position: center;
+}
+
+.glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 60% 70% at 50% 100%, rgb(41 51 155 / 0.55), transparent 70%),
+    linear-gradient(var(--color-bg) 0%, transparent 30%, transparent 70%, var(--color-bg) 100%);
+}
+
+.inner {
+  padding: clamp(var(--space-12), 7vw, var(--space-24)) var(--space-6);
+  display: grid;
+  justify-items: center;
+  gap: var(--space-6);
+  text-align: center;
+  @include glass(base, $radius: 32px);
+}
+
+.eyebrow {
+  @include label;
+  color: var(--color-text-subtle);
+}
+
+.title {
+  font-size: var(--text-h1);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  max-width: 18ch;
+}
+
+.text {
+  color: var(--color-text-muted);
+  font-size: var(--text-lg);
+  max-width: 48ch;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}

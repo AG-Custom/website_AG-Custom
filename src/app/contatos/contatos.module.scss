@@ -1,0 +1,200 @@
+@use "mixins" as *;
+
+.grid {
+  display: grid;
+  gap: var(--space-12);
+
+  @include up(lg) {
+    grid-template-columns: 4fr 7fr;
+    gap: calc(100% / 12);
+    align-items: start;
+  }
+}
+
+// ---------- Canais ----------
+.channels {
+  ul {
+    display: grid;
+    gap: var(--space-3);
+  }
+}
+
+// canais = superfícies de vidro clicáveis (reflexo + elevação)
+.channel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6) var(--space-4) var(--space-4);
+  @include glass(base, $sheen: true, $radius: var(--radius-md));
+  @include glass-lift;
+
+  @include hover {
+    .channelArrow {
+      transform: translate(2px, -2px);
+      color: var(--color-text);
+    }
+  }
+}
+
+.primary {
+  background: linear-gradient(135deg, rgb(139 92 246 / 0.18), rgb(41 51 155 / 0.12)), var(--glass-bg);
+
+  .channelIcon {
+    background: var(--color-accent);
+    color: var(--white);
+  }
+}
+
+.channelIcon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: rgb(255 255 255 / 0.06);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.1);
+  color: var(--color-text-muted);
+}
+
+.channelText {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.channelLabel {
+  @include label;
+  color: var(--color-text-subtle);
+}
+
+.channelValue {
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}
+
+.channelArrow {
+  flex-shrink: 0;
+  color: var(--color-text-subtle);
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+  color: var(--color-text-subtle);
+  font-size: var(--text-sm);
+}
+
+// ---------- Formulário ----------
+.formCard {
+  padding: clamp(var(--space-6), 4vw, var(--space-12));
+  @include glass(base);
+}
+
+.formTitle {
+  font-size: var(--text-h3);
+  letter-spacing: -0.03em;
+}
+
+.formText {
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-8);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.form {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.row {
+  display: grid;
+  gap: var(--space-6);
+
+  @include up(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.field {
+  display: grid;
+  gap: var(--space-2);
+
+  label {
+    @include label;
+    color: var(--color-text-muted);
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    // campo sólido o bastante para leitura, com leve transparência
+    background: rgb(11 12 14 / 0.6);
+    box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.35);
+    font-size: var(--text-base);
+    transition:
+      border-color var(--duration-fast),
+      box-shadow var(--duration-fast);
+
+    &::placeholder {
+      color: var(--color-text-subtle);
+      opacity: 0.8;
+    }
+
+    &:focus-visible {
+      outline: none;
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px var(--color-accent-soft);
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 140px;
+  }
+}
+
+.optional {
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--color-text-subtle);
+}
+
+.hp {
+  @include visually-hidden;
+}
+
+.formFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
+}
+
+.status {
+  font-size: var(--text-sm);
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+.success {
+  color: var(--color-success);
+}
+
+.error {
+  color: #fca5a5;
+}

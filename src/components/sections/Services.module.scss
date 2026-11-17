@@ -1,0 +1,211 @@
+@use "mixins" as *;
+
+// Grid "bento": 2 cards largos em cima, 3 menores embaixo (desktop)
+.grid {
+  display: grid;
+  gap: var(--space-4);
+
+  @include up(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include up(lg) {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.cell {
+  display: flex;
+
+  @include up(md) {
+    &:last-child {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @include up(lg) {
+    grid-column: span 2;
+
+    &:nth-child(-n + 2) {
+      grid-column: span 3;
+    }
+
+    &:last-child {
+      grid-column: span 2;
+    }
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-6);
+  overflow: hidden;
+  @include glass(base, $sheen: true);
+  @include glass-lift;
+
+  // brilho violeta que acende no canto ao passar o mouse
+  & {
+    background-image:
+      radial-gradient(120% 80% at 100% 0%, rgb(139 92 246 / 0) 0%, transparent 60%),
+      var(--glass-gloss),
+      var(--glass-noise),
+      var(--glass-tint);
+    transition:
+      transform var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out),
+      background-color var(--duration-base);
+  }
+
+  @include hover {
+    background-image:
+      radial-gradient(120% 80% at 100% 0%, rgb(139 92 246 / 0.16) 0%, transparent 60%),
+      var(--glass-gloss),
+      var(--glass-noise),
+      var(--glass-tint);
+
+    .icon {
+      color: var(--white);
+      background: var(--color-accent);
+      box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.35),
+        0 0 24px -4px rgb(139 92 246 / 0.7);
+    }
+
+    .more {
+      opacity: 1;
+      transform: none;
+    }
+
+    .index {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+  }
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+// número e "Orçamento ↗" ocupam o mesmo lugar e se alternam no hover
+.corner {
+  display: grid;
+  justify-items: end;
+
+  > * {
+    grid-area: 1 / 1;
+  }
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  color: var(--color-accent-hover);
+  background: rgb(139 92 246 / 0.12);
+  box-shadow:
+    inset 1px 1px 0 rgb(255 255 255 / 0.18),
+    inset 0 0 0 1px rgb(139 92 246 / 0.25);
+  transition:
+    background-color var(--duration-base),
+    color var(--duration-base),
+    box-shadow var(--duration-base);
+}
+
+.index {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-subtle);
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+
+  @media (hover: none) {
+    display: none;
+  }
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-h3);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.description {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  max-width: 48ch;
+}
+
+.items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: auto;
+  padding-top: var(--space-2);
+
+  span {
+    @include label;
+    padding: 4px var(--space-3);
+    border-radius: var(--radius-full);
+    background: rgb(255 255 255 / 0.05);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.07);
+    color: var(--color-text-muted);
+    font-size: 0.625rem;
+  }
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-accent-hover);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+
+  // no touch não há hover: mostra a seta no lugar do número
+  @media (hover: none) {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// Mobile: carrossel horizontal com encaixe (menos rolagem vertical)
+@include down(md) {
+  .grid {
+    display: flex;
+    gap: var(--space-3);
+    margin-inline: calc(var(--gutter) * -1);
+    padding: var(--space-2) var(--gutter) var(--space-6);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .cell {
+    flex: 0 0 82%;
+    scroll-snap-align: start;
+  }
+}

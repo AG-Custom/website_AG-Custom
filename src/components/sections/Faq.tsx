@@ -2,11 +2,12 @@ import { faq } from "@/content/home";
 import { Plus } from "@/components/ui/Icons";
 import styles from "./Faq.module.scss";
 
-type Props = { limit?: number };
+type FaqItem = { readonly question: string; readonly answer: string };
+type Props = { limit?: number; items?: readonly FaqItem[] };
 
 /** Perguntas frequentes com <details> nativo (acessível e sem JS). */
-export function FaqList({ limit }: Props) {
-  const items = limit ? faq.slice(0, limit) : faq;
+export function FaqList({ limit, items: source = faq }: Props) {
+  const items = limit ? source.slice(0, limit) : source;
   return (
     <div className={styles.list}>
       {items.map((item, i) => (

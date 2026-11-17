@@ -1,0 +1,134 @@
+@use "mixins" as *;
+
+.wrap {
+  display: grid;
+  gap: var(--space-6);
+}
+
+// 3 cartões lado a lado (empilhados no celular), com seta entre eles
+.steps {
+  display: grid;
+  gap: var(--space-8);
+
+  @include up(md) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-12);
+  }
+}
+
+.step {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  padding: var(--space-8) var(--space-6);
+  @include glass(base);
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgb(34 197 94 / 0.12);
+  box-shadow: inset 0 0 0 1px rgb(34 197 94 / 0.35);
+  color: var(--color-success);
+}
+
+.when {
+  @include label;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  background: rgb(255 255 255 / 0.06);
+  color: var(--color-text-muted);
+  text-align: right;
+}
+
+.number {
+  @include label;
+  color: var(--color-text-subtle);
+}
+
+.title {
+  font-size: var(--text-h3);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.text {
+  font-size: var(--text-lg);
+  color: var(--color-text-muted);
+}
+
+// seta para o próximo passo: para baixo no celular, para a direita a partir de md
+.arrow {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--space-8) / -2);
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
+  color: var(--color-text-muted);
+  transform: translate(-50%, 50%) rotate(90deg);
+
+  @include up(md) {
+    left: auto;
+    right: calc(var(--space-12) / -2);
+    top: 50%;
+    bottom: auto;
+    transform: translate(50%, -50%);
+  }
+}
+
+// ---------- Destaque: só paga depois de aprovar ----------
+.note {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: rgb(34 197 94 / 0.08);
+  box-shadow: inset 0 0 0 1px rgb(34 197 94 / 0.3);
+
+  @include up(md) {
+    grid-template-columns: auto 1fr auto;
+    padding: var(--space-6) var(--space-8);
+  }
+}
+
+.noteIcon {
+  color: var(--color-success);
+}
+
+.noteText {
+  font-size: var(--text-lg);
+  color: var(--color-text-muted);
+
+  strong {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+}
+
+.note .noteCta {
+  grid-column: 1 / -1;
+
+  @include up(md) {
+    grid-column: auto;
+  }
+}

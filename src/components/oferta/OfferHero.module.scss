@@ -1,0 +1,312 @@
+@use "mixins" as *;
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding-top: calc(var(--header-h) + clamp(var(--space-12), 7vw, var(--space-24)));
+  padding-bottom: clamp(var(--space-16), 7vw, var(--space-24));
+}
+
+.glow {
+  position: absolute;
+  z-index: -1;
+  right: -15%;
+  top: 10%;
+  width: 70vw;
+  height: 70vw;
+  max-width: 900px;
+  max-height: 900px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(41 51 155 / 0.4), transparent 65%);
+  pointer-events: none;
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-12);
+
+  @include up(lg) {
+    grid-template-columns: 6fr 5fr;
+    align-items: center;
+    gap: var(--space-16);
+  }
+}
+
+.copy {
+  display: grid;
+  gap: var(--space-6);
+  justify-items: start;
+}
+
+.eyebrow {
+  @include label;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 34px;
+  padding: 0 var(--space-4);
+  color: var(--color-text-muted);
+  @include glass(subtle, $radius: var(--radius-full), $liquid: true);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-success);
+  box-shadow: 0 0 0 4px rgb(34 197 94 / 0.15);
+}
+
+.title {
+  font-size: clamp(2.25rem, 5.4vw, 4.5rem);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  max-width: 15ch;
+
+  :global(.accent) {
+    white-space: nowrap;
+  }
+}
+
+.titleAfter {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: 0.62em;
+  line-height: 1.15;
+  color: var(--color-text-muted);
+}
+
+.lead {
+  font-size: var(--text-lg);
+  color: var(--color-text-muted);
+  max-width: 44ch;
+}
+
+.actions {
+  display: grid;
+  gap: var(--space-6);
+  justify-items: start;
+  margin-top: var(--space-2);
+  width: 100%;
+}
+
+.actions .cta {
+  width: 100%;
+
+  @include up(sm) {
+    width: auto;
+  }
+}
+
+.risk {
+  display: grid;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+
+  @include up(sm) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+
+    &::before {
+      content: "";
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4.5 8.2 2.3 2.3 4.7-5'/%3E%3C/svg%3E")
+          center / 12px no-repeat,
+        rgb(34 197 94 / 0.85);
+    }
+  }
+}
+
+// ---------- Preview: computador + celular ----------
+.visual {
+  position: relative;
+}
+
+.showcase {
+  position: relative;
+  display: grid;
+  gap: var(--space-4);
+  padding-right: 0;
+
+  @include up(sm) {
+    padding-right: 13%; // espaço para o celular sobreposto
+  }
+}
+
+.browser {
+  display: none;
+  overflow: hidden;
+  @include glass(base, $radius: var(--radius-lg));
+
+  @include up(sm) {
+    display: block;
+  }
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: 36px;
+  padding-inline: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+
+  i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--color-border-strong);
+  }
+}
+
+.url {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+  max-width: 280px;
+  height: 22px;
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-full);
+  background: rgb(255 255 255 / 0.05);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  overflow: hidden;
+}
+
+.lock {
+  width: 8px;
+  height: 9px;
+  flex-shrink: 0;
+  border-radius: 2px;
+  background: var(--color-success);
+}
+
+.typed {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+// celular sobreposto ao canto inferior direito do navegador
+.phone {
+  // celular (< sm): o exemplo aparece na versão de celular, cortado embaixo com fade
+  position: relative;
+  width: min(66%, 260px);
+  max-height: 380px;
+  margin-inline: auto;
+  overflow: hidden;
+  padding: 5px 5px 0;
+  border-radius: 26px 26px 0 0;
+  background: var(--gray-990);
+  box-shadow: 0 0 0 1px var(--color-border-strong);
+  mask-image: linear-gradient(180deg, #000 70%, transparent);
+  -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent);
+
+  > * {
+    border-radius: 21px 21px 0 0;
+    overflow: hidden;
+  }
+
+  // a partir de sm: celular inteiro sobreposto ao canto do navegador
+  @include up(sm) {
+    position: absolute;
+    right: 0;
+    bottom: calc(var(--space-12) - var(--space-2));
+    width: 27%;
+    max-height: none;
+    margin: 0;
+    padding: 5px;
+    border-radius: 22px;
+    mask-image: none;
+    -webkit-mask-image: none;
+    box-shadow:
+      0 0 0 1px var(--color-border-strong),
+      0 30px 60px -20px rgb(0 0 0 / 0.8);
+
+    > * {
+      border-radius: 17px;
+    }
+  }
+}
+
+.switcher {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 32px;
+}
+
+.switcherLabel {
+  white-space: nowrap;
+  @include label;
+  color: var(--color-text-subtle);
+
+  strong {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+}
+
+.switcherDots {
+  display: flex;
+  gap: var(--space-1);
+}
+
+// alvo de toque de 32px, ponto visual pequeno
+.switcherDot {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 32px;
+
+  &::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border-strong);
+    transition:
+      width var(--duration-base) var(--ease-out),
+      background-color var(--duration-base) var(--ease-out);
+  }
+}
+
+.switcherDotActive::before {
+  width: 18px;
+  background: var(--color-text);
+}
+
+// ---------- Animação ----------
+@include motion {
+  .typed {
+    width: calc(var(--chars) * 1ch);
+    animation: typing 800ms steps(var(--chars), end) both;
+  }
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+}

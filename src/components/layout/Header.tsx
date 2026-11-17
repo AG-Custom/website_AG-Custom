@@ -78,7 +78,7 @@ export function Header() {
       >
         <div className={styles.inner}>
           <Link href="/" className={styles.brand} aria-label="AG Custom — página inicial">
-            <Logo size={34} title="" />
+            <Logo size={24} title="" />
             <span className={styles.wordmark}>AG Custom</span>
           </Link>
 

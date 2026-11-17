@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { RevealObserver } from "@/components/ui/RevealObserver";
 import { GlassPointer } from "@/components/ui/GlassPointer";
 import { site } from "@/content/site";
@@ -96,9 +94,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <a href="#conteudo" className="skip-link">
           Pular para o conteúdo
         </a>
-        <Header />
-        <main id="conteudo">{children}</main>
-        <Footer />
+        {/* Header/Footer ficam nos layouts dos grupos: (site) = institucional, (oferta) = landing pages */}
+        {children}
         <RevealObserver />
         <GlassPointer />
       </body>

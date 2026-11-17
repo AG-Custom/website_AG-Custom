@@ -124,7 +124,7 @@ export const faq = [
   {
     question: "Quanto custa?",
     answer:
-      "Sites a partir de R$ 150. Sistemas e aplicativos são orçados conforme as funcionalidades necessárias. Fale com a gente e enviamos uma proposta sem compromisso.",
+      "Sites por R$ 150/mês no plano Site Essencial, sem custo de criação e com hospedagem e manutenção inclusas. Sistemas e aplicativos são orçados conforme as funcionalidades necessárias. Fale com a gente e enviamos uma proposta sem compromisso.",
   },
   {
     question: "Vocês fazem manutenção depois da entrega?",

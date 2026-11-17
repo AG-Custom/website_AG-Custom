@@ -156,9 +156,9 @@ export default function DesignSystemPage() {
           </div>
           <Meta items={[2026, "Sistema web", "Vue 3", "Quasar"]} />
           <div className={styles.row}>
-            <Logo size={56} />
+            <Logo size={48} />
             <span style={{ color: "var(--color-text-muted)" }}>
-              <Logo size={40} />
+              <Logo size={32} />
             </span>
           </div>
         </section>

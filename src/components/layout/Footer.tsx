@@ -14,7 +14,7 @@ export function Footer() {
         <div className={styles.top}>
           <div className={styles.brandCol}>
             <Link href="/" className={styles.brand} aria-label="AG Custom — página inicial">
-              <Logo size={40} title="" />
+              <Logo size={30} title="" />
             </Link>
             <p className={styles.tagline}>
               Sites, aplicativos e sistemas sob medida.

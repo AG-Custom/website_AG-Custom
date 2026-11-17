@@ -1,0 +1,382 @@
+@use "mixins" as *;
+
+// Site de EXEMPLO (negócio fictício). As cores (--s-*) e a fonte vêm de content/oferta.ts,
+// não do design system: a ideia é mostrar que cada site tem a marca do cliente.
+// Tudo em `em`, com a fonte base em unidades do container (cqi): o site escala como uma imagem.
+
+.frame {
+  container-type: inline-size;
+}
+
+.site {
+  position: relative;
+  overflow: hidden;
+  background: var(--s-bg);
+  color: var(--s-text);
+  font-family: var(--font-body);
+  line-height: 1.4;
+  transition:
+    background-color var(--duration-slow) var(--ease-out),
+    color var(--duration-slow) var(--ease-out);
+
+  &[data-font="serif"] .title,
+  &[data-font="serif"] .brand {
+    font-family: ui-serif, Georgia, "Times New Roman", serif;
+    letter-spacing: -0.01em;
+  }
+}
+
+// ---------- Desktop: "tela" 16:10 de um site com ~1100px ----------
+.desktop {
+  aspect-ratio: 16 / 10;
+  display: flex;
+  flex-direction: column;
+  gap: 2.4em;
+  padding: 1.6em 3em;
+  font-size: 1.45cqi;
+
+  .hero {
+    grid-template-columns: 1.1fr 1fr;
+    gap: 3em;
+  }
+
+  .title {
+    font-size: 3.4em;
+  }
+
+  .art {
+    aspect-ratio: 1 / 0.86;
+  }
+}
+
+// ---------- Celular: tela 9:19 ----------
+.phone {
+  aspect-ratio: 9 / 19.5;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4em;
+  padding: 1.2em 1.2em 1.6em;
+  font-size: 5.2cqi;
+
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 1.2em;
+  }
+
+  .copy {
+    order: 2;
+  }
+
+  .art {
+    order: 1;
+    aspect-ratio: 1 / 0.7;
+  }
+
+  .title {
+    font-size: 2.1em;
+  }
+
+  .primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .services {
+    grid-template-columns: 1fr;
+  }
+
+  .icon {
+    width: 34%;
+  }
+}
+
+// ---------- Navegação ----------
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  font-size: 0.9em;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 2em;
+  height: 2em;
+  border-radius: 0.5em;
+  background: var(--s-accent);
+  color: var(--s-bg);
+  font-family: var(--font-body);
+  font-size: 0.8em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.links {
+  display: flex;
+  gap: 2em;
+  margin-left: auto;
+  opacity: 0.72;
+}
+
+.navCta {
+  padding: 0.55em 1.1em;
+  border-radius: 99em;
+  border: 1px solid color-mix(in srgb, var(--s-text) 25%, transparent);
+  font-weight: 600;
+}
+
+.burger {
+  display: grid;
+  gap: 0.3em;
+
+  i {
+    width: 1.3em;
+    height: 0.13em;
+    border-radius: 1em;
+    background: currentColor;
+  }
+}
+
+// ---------- Hero ----------
+.hero {
+  display: grid;
+  align-items: center;
+}
+
+.copy {
+  display: grid;
+  justify-items: start;
+  gap: 0.9em;
+}
+
+.eyebrow {
+  padding: 0.35em 0.8em;
+  border-radius: 99em;
+  background: color-mix(in srgb, var(--s-accent) 16%, transparent);
+  color: var(--s-accent);
+  font-size: 0.78em;
+  font-weight: 600;
+}
+
+.title {
+  display: block;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.sub {
+  max-width: 34em;
+  opacity: 0.75;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7em;
+  width: 100%;
+  margin-top: 0.3em;
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75em 1.3em;
+  border-radius: 99em;
+  font-weight: 600;
+  font-size: 0.95em;
+}
+
+.primary {
+  background: var(--s-accent);
+  color: var(--s-bg);
+  box-shadow: 0 0.6em 1.4em -0.6em color-mix(in srgb, var(--s-accent) 70%, transparent);
+}
+
+.secondary {
+  border: 1px solid color-mix(in srgb, var(--s-text) 28%, transparent);
+}
+
+.info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em 1.4em;
+  font-size: 0.8em;
+  opacity: 0.65;
+
+  span::before {
+    content: "●";
+    margin-right: 0.5em;
+    color: var(--s-accent);
+    font-size: 0.7em;
+  }
+}
+
+// "Foto" do negócio: composição em gradiente + ícone do segmento
+.art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: 1.2em;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 75% 20%, color-mix(in srgb, var(--s-accent) 55%, transparent), transparent 55%),
+    radial-gradient(circle at 15% 90%, color-mix(in srgb, var(--s-accent) 25%, transparent), transparent 50%),
+    linear-gradient(150deg, var(--s-art), color-mix(in srgb, var(--s-art) 55%, var(--s-bg)));
+}
+
+.orb {
+  position: absolute;
+  width: 62%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--s-text) 22%, transparent);
+  box-shadow: inset 0 0 3em color-mix(in srgb, var(--s-accent) 30%, transparent);
+}
+
+.icon {
+  position: relative;
+  width: 30%;
+  color: var(--s-text);
+  opacity: 0.92;
+}
+
+.rating {
+  position: absolute;
+  top: 1em;
+  left: 1em;
+  display: grid;
+  gap: 0.1em;
+  padding: 0.55em 0.8em;
+  border-radius: 0.7em;
+  background: var(--s-surface);
+  color: var(--s-text);
+  font-size: 0.72em;
+  font-weight: 600;
+  box-shadow: 0 0.8em 1.6em -0.8em rgb(0 0 0 / 0.45);
+}
+
+.stars {
+  color: #f5b400;
+  letter-spacing: 0.08em;
+}
+
+.chat {
+  position: absolute;
+  right: 1em;
+  bottom: 1em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.6em 0.9em;
+  border-radius: 0.7em;
+  background: var(--s-surface);
+  color: var(--s-text);
+  font-size: 0.72em;
+  font-weight: 600;
+  box-shadow: 0 0.8em 1.6em -0.8em rgb(0 0 0 / 0.45);
+
+  i {
+    width: 0.6em;
+    height: 0.6em;
+    border-radius: 50%;
+    background: #25d366;
+  }
+}
+
+// ---------- Serviços ----------
+.services {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8em;
+}
+
+.card {
+  display: grid;
+  gap: 0.25em;
+  padding: 0.9em 1em;
+  border-radius: 0.8em;
+  background: var(--s-surface);
+  border: 1px solid color-mix(in srgb, var(--s-text) 10%, transparent);
+  font-size: 0.85em;
+
+  strong {
+    font-weight: 700;
+  }
+
+  span:last-child {
+    opacity: 0.65;
+    font-size: 0.9em;
+  }
+}
+
+.dot {
+  width: 1.6em;
+  height: 1.6em;
+  margin-bottom: 0.3em;
+  border-radius: 0.45em;
+  background: color-mix(in srgb, var(--s-accent) 22%, transparent);
+  box-shadow: inset 0 0 0 0.35em color-mix(in srgb, var(--s-accent) 8%, transparent);
+}
+
+// botão flutuante de WhatsApp (o site do cliente também converte pelo WhatsApp)
+.whatsapp {
+  position: absolute;
+  right: 1.4em;
+  bottom: 1.4em;
+  display: grid;
+  place-items: center;
+  width: 3em;
+  height: 3em;
+  border-radius: 50%;
+  background: #25d366;
+  color: #fff;
+  box-shadow: 0 0.6em 1.4em -0.4em rgb(37 211 102 / 0.6);
+
+  svg {
+    width: 55%;
+  }
+}
+
+// ---------- "Site se montando" ----------
+@include motion {
+  .build [style*="--b"] {
+    animation: build 650ms var(--ease-out) both;
+    animation-delay: calc(250ms + var(--b) * 110ms);
+  }
+
+  .build .whatsapp {
+    animation:
+      build 650ms var(--ease-out) both calc(250ms + 9 * 110ms),
+      wa-pulse 2.4s var(--ease-out) 2s infinite;
+  }
+}
+
+@keyframes build {
+  from {
+    opacity: 0;
+    transform: translateY(0.8em) scale(0.97);
+  }
+}
+
+@keyframes wa-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(37 211 102 / 0.55);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 1em rgb(37 211 102 / 0);
+  }
+}

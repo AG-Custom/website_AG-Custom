@@ -1,0 +1,159 @@
+@use "mixins" as *;
+
+// Botões em formato de pílula, com tratamento de vidro.
+// primary   = "gota" violeta: gradiente + reflexo interno (ação principal, 1 por viewport)
+// secondary = vidro escuro com borda iluminada
+// ghost     = só texto + ícone
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  isolation: isolate;
+  transition:
+    background-color var(--duration-base) var(--ease-out),
+    color var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    transform 450ms cubic-bezier(0.34, 1.56, 0.64, 1); // "mola" (Liquid Glass)
+
+  @include motion {
+    @include hover {
+      transform: scale(1.04);
+    }
+  }
+
+  &:active {
+    transform: scale(0.97);
+    transition-duration: var(--duration-fast);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  // reflexo que segue o cursor (data-sheen + GlassPointer)
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(
+      120px circle at var(--mx, 50%) var(--my, 0%),
+      rgb(255 255 255 / 0.22),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-out);
+    pointer-events: none;
+  }
+
+  @include hover {
+    &::after {
+      opacity: 1;
+    }
+  }
+}
+
+.md {
+  min-height: 44px;
+  padding: 0 var(--space-6);
+  font-size: var(--text-sm);
+}
+
+.lg {
+  min-height: 56px;
+  padding: 0 var(--space-8);
+  font-size: var(--text-base);
+}
+
+.icon {
+  display: inline-flex;
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.label {
+  position: relative;
+}
+
+// ---------- Primary ----------
+.primary {
+  color: var(--white);
+  background: linear-gradient(180deg, #a27bff 0%, var(--violet-500) 55%, #7a4ae8 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    inset 0 -1px 0 rgb(0 0 0 / 0.2),
+    0 0 0 1px rgb(139 92 246 / 0.5),
+    0 8px 24px -8px rgb(139 92 246 / 0.55);
+
+  @include hover {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.45),
+      inset 0 -1px 0 rgb(0 0 0 / 0.2),
+      0 0 0 1px rgb(171 135 255 / 0.7),
+      0 12px 32px -8px rgb(139 92 246 / 0.7);
+
+    .icon {
+      transform: translate(2px, -2px);
+    }
+  }
+}
+
+// ---------- Secondary (vidro) ----------
+.secondary {
+  color: var(--color-text);
+  @include glass(subtle, $radius: var(--radius-full), $liquid: true);
+  @include glass-lift;
+
+  // a pílula cresce com mola em vez de só subir
+  & {
+    transition:
+      transform 450ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow var(--duration-base) var(--ease-out);
+  }
+
+  @include motion {
+    @include hover {
+      transform: scale(1.04);
+    }
+  }
+
+  @include hover {
+    .icon {
+      transform: translateX(3px);
+    }
+  }
+}
+
+// ---------- Ghost ----------
+.ghost {
+  padding-inline: 0;
+  min-height: 44px;
+  color: var(--color-text);
+
+  &::after {
+    display: none;
+  }
+
+  .label {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: background-size var(--duration-base) var(--ease-out);
+  }
+
+  @include hover {
+    .label {
+      background-size: 100% 1px;
+    }
+
+    .icon {
+      transform: translate(2px, -2px);
+    }
+  }
+}

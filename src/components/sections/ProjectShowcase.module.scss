@@ -1,0 +1,189 @@
+@use "mixins" as *;
+
+.list {
+  display: grid;
+  gap: clamp(var(--space-24), 12vw, var(--space-40));
+}
+
+.article {
+  position: relative;
+  display: grid;
+  gap: var(--space-8);
+
+  @include up(lg) {
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: var(--space-6);
+    align-items: center;
+  }
+}
+
+.media {
+  position: relative;
+  display: block;
+  padding-bottom: var(--space-8);
+}
+
+.browser {
+  transition:
+    transform var(--duration-slow) var(--ease-out),
+    border-color var(--duration-base);
+}
+
+.phone {
+  position: absolute;
+  bottom: 0;
+  width: clamp(84px, 19%, 170px);
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.text {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+  justify-items: start;
+}
+
+.index {
+  @include label;
+  color: var(--color-text-subtle);
+
+  span {
+    color: var(--color-accent);
+    margin-right: var(--space-2);
+  }
+}
+
+.name {
+  font-size: var(--text-h2);
+  line-height: 1.05;
+  letter-spacing: var(--tracking-tight);
+}
+
+// Link "esticado": o título torna o artigo inteiro clicável
+.titleLink {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  &:focus-visible {
+    outline: none;
+
+    &::after {
+      @include focus-ring;
+      border-radius: var(--radius-md);
+    }
+  }
+}
+
+.tagline {
+  color: var(--color-text-muted);
+  font-size: var(--text-lg);
+  max-width: 38ch;
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+
+  svg {
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+}
+
+.article:hover {
+  .browser {
+    box-shadow: var(--glass-highlight), var(--glass-shadow-hover);
+
+    // o link esticado cobre a moldura, então o :hover vem do artigo
+    &::after {
+      opacity: 1;
+    }
+
+    &::before {
+      background: var(--glass-edge-hover);
+    }
+  }
+
+  .more {
+    color: var(--color-accent-hover);
+
+    svg {
+      transform: translate(2px, -2px);
+    }
+  }
+
+  @include motion {
+    .browser {
+      transform: translateY(-6px);
+    }
+
+    .phone {
+      transform: translateY(-10px);
+    }
+  }
+}
+
+// ---------- Composições ----------
+.left {
+  .media {
+    @include up(lg) {
+      grid-column: 1 / span 8;
+    }
+  }
+
+  .phone {
+    right: -3%;
+  }
+
+  .text {
+    @include up(lg) {
+      grid-column: 10 / span 3;
+    }
+  }
+}
+
+.right {
+  .media {
+    @include up(lg) {
+      grid-column: 5 / span 8;
+      grid-row: 1;
+    }
+  }
+
+  .phone {
+    left: -3%;
+  }
+
+  .text {
+    @include up(lg) {
+      grid-column: 1 / span 3;
+      grid-row: 1;
+    }
+  }
+}
+
+.wide {
+  .media {
+    @include up(lg) {
+      grid-column: 3 / span 9;
+    }
+  }
+
+  .phone {
+    left: 6%;
+  }
+
+  .text {
+    @include up(lg) {
+      grid-column: 3 / span 6;
+    }
+  }
+}

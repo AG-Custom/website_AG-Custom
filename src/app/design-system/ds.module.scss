@@ -1,0 +1,113 @@
+@use "mixins" as *;
+
+.block {
+  display: grid;
+  gap: var(--space-6);
+  padding-block: var(--space-16);
+  border-top: 1px solid var(--color-border);
+}
+
+.h {
+  @include label;
+  color: var(--color-accent-hover);
+  font-weight: 400;
+}
+
+.note {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  max-width: var(--measure);
+}
+
+.block code {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-subtle);
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-4);
+}
+
+.swatch {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+.chip {
+  height: 72px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-strong);
+  margin-bottom: var(--space-2);
+}
+
+// palco com luz atrás, para o vidro ter o que refratar
+.glassStage {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+  padding: var(--space-12) var(--space-6);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 20% 30%, rgb(139 92 246 / 0.55), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgb(41 51 155 / 0.8), transparent 45%),
+    var(--color-bg-deep);
+
+  > * {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-8) var(--space-6);
+  }
+}
+
+.glassSubtle {
+  @include glass(subtle);
+}
+
+.glassBase {
+  @include glass(base);
+}
+
+.glassStrong {
+  @include glass(strong);
+}
+
+.glassInteractive {
+  @include glass(base, $sheen: true);
+  @include glass-lift;
+}
+
+.typeList {
+  display: grid;
+}
+
+.typeRow {
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.media {
+  position: relative;
+  max-width: 820px;
+  padding-bottom: var(--space-8);
+}
+
+.phone {
+  position: absolute;
+  right: -2%;
+  bottom: 0;
+  width: 22%;
+}

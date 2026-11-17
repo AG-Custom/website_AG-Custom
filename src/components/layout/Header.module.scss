@@ -1,0 +1,284 @@
+@use "mixins" as *;
+
+// Header = barra de vidro flutuante (pílula). Some ao rolar para baixo.
+.header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: var(--z-header);
+  padding-top: var(--space-3);
+  pointer-events: none; // só a pílula recebe cliques
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.hidden {
+  transform: translateY(calc(-100% - var(--space-3)));
+}
+
+.menuOpen {
+  z-index: calc(var(--z-menu) + 1);
+}
+
+.inner {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  width: min(var(--container-max), calc(100% - var(--space-6)));
+  height: 56px;
+  margin-inline: auto;
+  padding-inline: var(--space-3) var(--space-2);
+  transition: box-shadow var(--duration-base) var(--ease-out);
+  @include glass(strong, $radius: var(--radius-full));
+
+  @include up(md) {
+    width: min(var(--container-max), calc(100% - var(--gutter) * 2));
+    padding-inline: var(--space-4) var(--space-2);
+  }
+}
+
+// Ao rolar, a sombra aumenta (sensação de profundidade sobre o conteúdo)
+.scrolled .inner {
+  box-shadow: var(--glass-highlight), var(--glass-shadow-hover);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  padding-inline: var(--space-2);
+  color: var(--color-text);
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.wordmark {
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+// ---------- Desktop nav ----------
+.desktopNav {
+  display: none;
+
+  @include up(lg) {
+    display: block;
+  }
+
+  ul {
+    display: flex;
+    gap: var(--space-1);
+  }
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  transition:
+    color var(--duration-fast),
+    background-color var(--duration-fast);
+
+  @include hover {
+    color: var(--color-text);
+    background: rgb(255 255 255 / 0.06);
+  }
+
+  // página atual: "gota" de vidro mais clara
+  &[aria-current="page"] {
+    color: var(--color-text);
+    background: rgb(255 255 255 / 0.08);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.1),
+      inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+// `.actions .cta` para vencer o display do próprio Button
+.actions .cta {
+  display: none;
+  border-radius: var(--radius-full);
+
+  @include up(md) {
+    display: inline-flex;
+  }
+}
+
+.menuOpen .cta {
+  visibility: hidden;
+}
+
+// ---------- Toggle ----------
+.toggle {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: rgb(255 255 255 / 0.06);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.1);
+  transition: background-color var(--duration-fast);
+
+  @include hover {
+    background: rgb(255 255 255 / 0.1);
+  }
+
+  @include up(lg) {
+    display: none;
+  }
+}
+
+.bars {
+  display: grid;
+  gap: 6px;
+  width: 18px;
+
+  i {
+    display: block;
+    height: 1.5px;
+    background: var(--color-text);
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+}
+
+.toggle[aria-expanded="true"] .bars i:first-child {
+  transform: translateY(3.75px) rotate(45deg);
+}
+
+.toggle[aria-expanded="true"] .bars i:last-child {
+  transform: translateY(-3.75px) rotate(-45deg);
+}
+
+// ---------- Menu mobile: painel acrílico (Fluent) ----------
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-menu);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: calc(56px + var(--space-3) * 2) var(--space-3) calc(var(--space-3) + env(safe-area-inset-bottom));
+  background: rgb(11 12 14 / 0.55);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
+  backdrop-filter: blur(28px) saturate(140%);
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    visibility 0s linear var(--duration-base);
+
+  @include up(lg) {
+    display: none;
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    background: var(--color-bg-deep);
+    backdrop-filter: none;
+  }
+}
+
+.menuVisible {
+  visibility: visible;
+  opacity: 1;
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    visibility 0s;
+}
+
+.menuNav {
+  overflow: hidden;
+  @include glass(base, $radius: var(--radius-lg));
+
+  ul {
+    display: grid;
+  }
+
+  li {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity var(--duration-base) var(--ease-out),
+      transform var(--duration-slow) var(--ease-out);
+
+    & + li {
+      border-top: 1px solid var(--color-border);
+    }
+  }
+}
+
+.menuVisible .menuNav li {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(var(--i) * 45ms + 60ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menuNav li {
+    transform: none;
+  }
+}
+
+.menuLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: 64px;
+  padding-inline: var(--space-6);
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 6.5vw, 2rem);
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+  transition: background-color var(--duration-fast);
+
+  &:active {
+    background: rgb(255 255 255 / 0.06);
+  }
+
+  &[aria-current="page"] {
+    background: rgb(139 92 246 / 0.1);
+
+    .menuIndex {
+      color: var(--color-accent-hover);
+    }
+  }
+}
+
+.menuIndex {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-subtle);
+  letter-spacing: var(--tracking-wide);
+}
+
+.menuFooter {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  @include glass(subtle, $radius: var(--radius-lg));
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 44px;
+  }
+}

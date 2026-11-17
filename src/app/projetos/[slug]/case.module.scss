@@ -1,0 +1,244 @@
+@use "mixins" as *;
+
+.top {
+  padding-top: calc(var(--header-h) + var(--space-12));
+  padding-bottom: clamp(var(--space-12), 6vw, var(--space-16));
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  margin-bottom: var(--space-12);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  transition: color var(--duration-fast);
+
+  @include hover {
+    color: var(--color-text);
+  }
+}
+
+.backIcon {
+  transform: rotate(180deg);
+}
+
+.headGrid {
+  display: grid;
+  gap: var(--space-8);
+
+  @include up(lg) {
+    grid-template-columns: 7fr 4fr;
+    column-gap: calc(100% / 12);
+    align-items: end;
+  }
+}
+
+.eyebrow {
+  @include label;
+  margin-bottom: var(--space-6);
+  color: var(--color-text-subtle);
+
+  span {
+    color: var(--color-accent);
+  }
+}
+
+.title {
+  font-size: var(--text-display);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.055em;
+}
+
+.lead {
+  font-size: var(--text-lg);
+  color: var(--color-text-muted);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6);
+  margin-top: var(--space-16);
+  padding: var(--space-6) var(--space-8);
+  @include glass(base);
+
+  @include up(lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  dt {
+    @include label;
+    margin-bottom: var(--space-2);
+    color: var(--color-text-subtle);
+  }
+
+  dd {
+    font-size: var(--text-sm);
+    overflow-wrap: anywhere;
+  }
+}
+
+.extLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-accent-hover);
+
+  @include hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+.body {
+  display: grid;
+  gap: var(--space-16);
+
+  @include up(lg) {
+    grid-template-columns: 6fr 5fr;
+    gap: calc(100% / 12);
+  }
+}
+
+.label {
+  @include label;
+  font-weight: 400;
+  margin-bottom: var(--space-6);
+  color: var(--color-text-subtle);
+}
+
+.summary {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  line-height: 1.35;
+  letter-spacing: -0.03em;
+}
+
+.features {
+  border-top: 1px solid var(--color-border);
+
+  li {
+    display: flex;
+    gap: var(--space-4);
+    padding-block: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+
+    span {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-accent);
+      padding-top: 0.3em;
+    }
+  }
+}
+
+.split {
+  display: grid;
+  gap: var(--space-12);
+  margin-top: var(--section-y);
+
+  @include up(md) {
+    grid-template-columns: 5fr 7fr;
+    align-items: center;
+    gap: calc(100% / 12);
+  }
+}
+
+.phoneWrap {
+  width: min(320px, 80%);
+  margin-inline: auto;
+}
+
+.stack {
+  display: grid;
+  gap: var(--space-6);
+  justify-items: start;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.note {
+  color: var(--color-text-muted);
+  max-width: 44ch;
+}
+
+// ---------- Próximo projeto ----------
+.next {
+  border-top: 1px solid var(--color-border);
+}
+
+.nextLink {
+  position: relative;
+  display: grid;
+  gap: var(--space-3);
+  padding-block: clamp(var(--space-16), 8vw, var(--space-24));
+
+  @include hover {
+    .nextName {
+      color: var(--color-accent-hover);
+
+      svg {
+        transform: translateX(8px);
+      }
+    }
+
+    .nextThumb {
+      opacity: 1;
+      transform: translateY(-50%);
+    }
+  }
+}
+
+.nextLabel {
+  @include label;
+  color: var(--color-text-subtle);
+}
+
+.nextName {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-family: var(--font-display);
+  font-size: var(--text-h1);
+  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+  transition: color var(--duration-base);
+
+  svg {
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+}
+
+.nextThumb {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 280px;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.16), var(--glass-shadow-hover);
+  opacity: 0;
+  transform: translateY(-44%);
+  transition:
+    opacity var(--duration-base),
+    transform var(--duration-slow) var(--ease-out);
+
+  img {
+    object-fit: cover;
+    object-position: top;
+  }
+
+  @include up(lg) {
+    display: block;
+  }
+}

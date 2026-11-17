@@ -1,0 +1,85 @@
+@use "mixins" as *;
+
+// Moldura de vidro para telas reais. A tela (imagem) é sólida; só a moldura é vidro.
+.frame {
+  overflow: hidden;
+}
+
+.browser {
+  @include glass(base, $sheen: true, $radius: var(--radius-md));
+
+  // o reflexo só aparece quando a moldura é clicável (data-sheen)
+  &:not([data-sheen])::after {
+    display: none;
+  }
+}
+
+// Celular: proporções de iPhone que escalam com a largura (container query units).
+// A figura é o container; a moldura (bezel) usa cqi para raio e espessura.
+.phone {
+  container-type: inline-size;
+  overflow: visible;
+}
+
+.bezel {
+  padding: 3.2cqi;
+  @include glass(strong, $radius: 15cqi);
+
+  .screen {
+    aspect-ratio: 390 / 844;
+    border-radius: 11.8cqi;
+  }
+}
+
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: 34px;
+  padding: 0 var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+
+  i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.16);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2);
+  }
+}
+
+.url {
+  flex: 1;
+  max-width: 260px;
+  margin-inline: auto;
+  padding: 3px var(--space-3);
+  border-radius: var(--radius-full);
+  background: rgb(255 255 255 / 0.05);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+  color: var(--color-text-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transform: translateX(-24px);
+}
+
+.screen {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--color-bg-deep);
+}
+
+.image {
+  object-fit: cover;
+  object-position: top center;
+}

@@ -1,0 +1,186 @@
+@use "sass:map";
+
+// Breakpoints mobile-first. Use: @include up(md) { ... }
+$breakpoints: (
+  sm: 640px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px,
+  2xl: 1536px,
+);
+
+@mixin up($bp) {
+  @media (min-width: map.get($breakpoints, $bp)) {
+    @content;
+  }
+}
+
+@mixin down($bp) {
+  @media (max-width: (map.get($breakpoints, $bp) - 0.02px)) {
+    @content;
+  }
+}
+
+@mixin motion {
+  @media (prefers-reduced-motion: no-preference) {
+    @content;
+  }
+}
+
+@mixin hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @content;
+    }
+  }
+}
+
+@mixin focus-ring {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+// Label mono pequena em caixa-alta (eyebrows, metadados)
+@mixin label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+// ---------------------------------------------------------------------------
+// Vidro (dark glass)
+// ---------------------------------------------------------------------------
+$glass-levels: (
+  subtle: --glass-subtle-bg,
+  base: --glass-bg,
+  strong: --glass-strong-bg,
+);
+
+/// Superfície de vidro escuro.
+/// $level  subtle | base | strong
+/// $edge   borda em gradiente "iluminada por cima" (usa ::before)
+/// $sheen  reflexo que segue o cursor (usa ::after; o elemento precisa de `data-sheen`)
+/// $radius raio da superfície
+/// Usa `position: relative` com especificidade zero (:where), então quem usa pode
+/// trocar para absolute/fixed sem brigar com a ordem dos CSS Modules.
+/// $liquid refração de lente estilo Liquid Glass. Só elementos pequenos; só Chromium
+///         (classe .liquid no <html>) e sem "reduzir transparência".
+@mixin glass($level: base, $edge: true, $sheen: false, $radius: var(--radius-lg), $liquid: false) {
+  isolation: isolate;
+  border-radius: $radius;
+  @if $level == subtle {
+    background: var(--glass-gloss), var(--glass-tint), var(#{map.get($glass-levels, $level)});
+  } @else {
+    background: var(--glass-gloss), var(--glass-noise), var(--glass-tint),
+      var(#{map.get($glass-levels, $level)});
+  }
+  box-shadow: var(--glass-highlight), var(--glass-shadow);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))
+    brightness(var(--glass-brightness));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate))
+    brightness(var(--glass-brightness));
+  @if not $edge {
+    border: 1px solid var(--color-border);
+  }
+
+  @at-root :where(#{&}) {
+    position: relative;
+  }
+
+  // Refração de lente: o mapa (SVG em layout.tsx) amplia o centro e comprime a borda.
+  // Blur baixo, senão a distorção some. Só para elementos PEQUENOS (botões, selos):
+  // o filtro amostra o fundo a cada quadro.
+  @if $liquid {
+    @at-root :global(.liquid) #{&} {
+      backdrop-filter: url(#liquid-glass) blur(2px) saturate(var(--glass-saturate))
+        brightness(var(--glass-brightness));
+    }
+  }
+
+  @if $edge {
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      padding: 1px;
+      border-radius: inherit;
+      background: var(--glass-edge);
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+  }
+
+  @if $sheen {
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: var(--glass-sheen);
+      opacity: 0;
+      transition: opacity var(--duration-base) var(--ease-out);
+      pointer-events: none;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover::after {
+        opacity: 1;
+      }
+    }
+  }
+
+  // Sem suporte a backdrop-filter: superfície sólida (a preferência "reduzir transparência" é tratada nos tokens)
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    background: var(--color-surface);
+  }
+}
+
+/// Profundidade no hover: sobe 2px, sombra maior e borda mais iluminada.
+/// Use em superfícies de vidro clicáveis.
+@mixin glass-lift {
+  // `& {}` evita o aviso de "declaração depois de regra aninhada" (vem depois do glass)
+  & {
+    transition:
+      transform var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      box-shadow: var(--glass-highlight), var(--glass-shadow-hover);
+
+      &::before {
+        background: var(--glass-edge-hover);
+      }
+    }
+  }
+
+  @include motion {
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        transform: translateY(-2px);
+      }
+    }
+  }
+}
+
+@mixin visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

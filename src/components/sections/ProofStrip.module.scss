@@ -1,0 +1,102 @@
+@use "mixins" as *;
+
+.strip {
+  padding-top: var(--space-4);
+}
+
+// painel de vidro com os números
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  overflow: hidden;
+  @include glass(base);
+
+  @include up(lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.stat {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-8) var(--space-4) var(--space-8) var(--space-6);
+
+  &:nth-child(odd) {
+    border-right: 1px solid var(--color-border);
+  }
+
+  &:nth-child(n + 3) {
+    border-top: 1px solid var(--color-border);
+  }
+
+  @include up(lg) {
+    padding: var(--space-12) var(--space-8);
+    border-right: 1px solid var(--color-border);
+
+    &:last-child {
+      border-right: 0;
+    }
+
+    &:nth-child(n + 3) {
+      border-top: 0;
+    }
+  }
+
+  dd {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 4.5vw, 3.75rem);
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+
+  dt {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    max-width: 20ch;
+  }
+}
+
+.marquee {
+  overflow: hidden;
+  padding-block: var(--space-8);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+.track {
+  display: flex;
+  width: max-content;
+
+  li {
+    @include label;
+    display: flex;
+    align-items: center;
+    gap: var(--space-12);
+    padding-right: var(--space-12);
+    color: var(--color-text-subtle);
+    font-size: var(--text-sm);
+    white-space: nowrap;
+
+    &::after {
+      content: "✳";
+      color: var(--color-accent);
+      font-size: var(--text-xs);
+    }
+  }
+
+  @include motion {
+    animation: marquee 40s linear infinite;
+
+    &:hover {
+      animation-play-state: paused;
+    }
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}

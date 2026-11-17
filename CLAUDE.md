@@ -34,20 +34,26 @@ Não há testes automatizados nem CI.
 ```
 src/
   app/
-    layout.tsx               # fontes, metadata/OG base, JSON-LD (ProfessionalService), Header/Footer, RevealObserver
-    page.tsx                 # Home: Hero, ProofStrip, Projetos, Serviços, Diferenciais, Processo, Sobre, FAQ, CTA
-    projetos/page.tsx        # lista completa
-    projetos/[slug]/page.tsx # estudo de caso (SSG via generateStaticParams)
-    contatos/                # página + ContactForm (client) 
-    faq/page.tsx             # FAQ completo + JSON-LD FAQPage
-    design-system/page.tsx   # documentação viva (noindex, bloqueada no robots)
+    layout.tsx               # fontes, metadata/OG base, JSON-LD (ProfessionalService), RevealObserver (sem Header/Footer)
+    not-found.tsx            # inclui Header/Footer por conta própria (só recebe o layout raiz)
+    (site)/                  # site institucional: layout.tsx com Header + Footer
+      page.tsx               # Home: Hero, ProofStrip, Projetos, Serviços, Diferenciais, Processo, Sobre, FAQ, CTA
+      projetos/page.tsx      # lista completa
+      projetos/[slug]/page.tsx # estudo de caso (SSG via generateStaticParams)
+      contatos/              # página + ContactForm (client)
+      faq/page.tsx           # FAQ completo + JSON-LD FAQPage
+      design-system/page.tsx # documentação viva (noindex, bloqueada no robots)
+    (oferta)/                # landing pages de tráfego: header mínimo sem menu, barra fixa de WhatsApp, captura de UTM
+      site-essencial/page.tsx # oferta "Site Essencial" R$ 150/mês (ver docs/estudo-oferta-site-mensal.md)
     api/contact/route.ts     # valida, honeypot, repassa à API externa (API_URL + API_KEY)
     sitemap.ts, robots.ts, opengraph-image.tsx, not-found.tsx
-  content/                   # TODO o conteúdo editável: site.ts, projects.ts, home.ts
+  content/                   # TODO o conteúdo editável: site.ts, projects.ts, home.ts, oferta.ts (preço e textos da oferta)
+  lib/                       # whatsapp.ts (link wa.me + código de origem do anúncio), tracking.ts (eventos de conversão)
   components/
     ui/        Button, Layout (Container, Section, SectionHeader, Tag, Meta, Eyebrow), MediaFrame, Logo, Icons, RevealObserver
     layout/    Header (client: menu mobile acessível), Footer
     sections/  Hero (+ CursorField client), ProofStrip, ProjectShowcase, Services, Differentials (+ Process), About, Faq, CtaBand
+    oferta/    OfferChrome, OfferHero (+ HeroShowcase client), OfferSections, SimpleSteps, ExampleSite (sites de exemplo por segmento), SegmentPicker, WhatsAppCta, StickyCta, AttributionCapture
   styles/      tokens.scss, _mixins.scss (up/down/motion/hover/label), globals.scss
 public/
   logo.svg
@@ -59,7 +65,8 @@ public/
 - **Cores, tipos, espaços, raios e durações só via tokens** (`var(--color-accent)`, `var(--space-6)`…). Nada de hex solto em componentes.
 - Breakpoints **mobile-first** com `@include up(md)` (sm 640, md 768, lg 1024, xl 1280). Nunca use JS para responsividade.
 - **Violeta (`--color-accent`)**: só na ação primária, numa palavra de destaque (`<span className="accent">`) e no foco. No máximo um destaque por viewport.
-- Server Components por padrão; `"use client"` só para Header, CursorField, ContactForm e RevealObserver.
+- Server Components por padrão; `"use client"` só para Header, CursorField, ContactForm, RevealObserver e, na oferta, WhatsAppCta, HeroShowcase, SegmentPicker, StickyCta e AttributionCapture.
+- **Landing page de oferta:** todo botão leva ao WhatsApp via `WhatsAppCta` (acrescenta o código `SE-<origem>-<anúncio>` e dispara a conversão). O título do hero não usa `data-enter` (é o LCP).
 - Navegação interna sempre com `next/link` (o `Button` com `href` já faz isso; `external` abre em nova aba).
 - Animação:
   - **acima da dobra**: `data-enter` (CSS puro, ordem via `style={{ "--enter": n }}`);

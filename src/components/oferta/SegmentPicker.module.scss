@@ -1,0 +1,193 @@
+@use "mixins" as *;
+
+// As cores dentro do mockup (--s-*) vêm do site de EXEMPLO (content/oferta.ts),
+// não do design system: o ponto é mostrar que cada site tem a marca do cliente.
+
+.wrap {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.chips {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-inline: calc(var(--gutter) * -1);
+  padding: var(--space-1) var(--gutter);
+
+  @include up(md) {
+    flex-wrap: wrap;
+    overflow: visible;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+}
+
+.chip {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 0 var(--space-6);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  @include glass(subtle, $radius: var(--radius-full), $sheen: true);
+  @include glass-lift;
+
+  &[aria-pressed="true"] {
+    color: var(--color-text);
+    background: var(--color-accent-soft);
+    box-shadow:
+      inset 0 0 0 1px rgb(139 92 246 / 0.6),
+      var(--glass-shadow);
+  }
+}
+
+.stage {
+  display: grid;
+  gap: var(--space-8);
+
+  @include up(lg) {
+    grid-template-columns: 8fr 3fr;
+    align-items: center;
+    gap: var(--space-12);
+  }
+}
+
+.devices {
+  position: relative;
+  display: grid;
+  gap: var(--space-4);
+
+  @include up(sm) {
+    padding-right: 11%; // espaço para o celular sobreposto
+  }
+}
+
+.browser {
+  display: none;
+  overflow: hidden;
+  @include glass(base, $radius: var(--radius-lg));
+
+  @include up(sm) {
+    display: block;
+  }
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: 38px;
+  padding-inline: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+
+  i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--color-border-strong);
+  }
+}
+
+.url {
+  padding: 2px var(--space-3);
+  border-radius: var(--radius-full);
+  background: rgb(255 255 255 / 0.05);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// celular sobreposto: só a partir de sm (no celular real, o próprio navegador já mostra o tamanho)
+.phone {
+  // celular (< sm): o exemplo aparece na versão de celular, cortado embaixo com fade
+  position: relative;
+  width: min(66%, 260px);
+  max-height: 380px;
+  margin-inline: auto;
+  overflow: hidden;
+  padding: 5px 5px 0;
+  border-radius: 26px 26px 0 0;
+  background: var(--gray-990);
+  box-shadow: 0 0 0 1px var(--color-border-strong);
+  mask-image: linear-gradient(180deg, #000 70%, transparent);
+  -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent);
+
+  > * {
+    border-radius: 21px 21px 0 0;
+    overflow: hidden;
+  }
+
+  // a partir de sm: celular inteiro sobreposto ao canto do navegador
+  @include up(sm) {
+    position: absolute;
+    right: 0;
+    bottom: var(--space-12);
+    width: 22%;
+    max-height: none;
+    margin: 0;
+    padding: 5px;
+    border-radius: 22px;
+    mask-image: none;
+    -webkit-mask-image: none;
+    box-shadow:
+      0 0 0 1px var(--color-border-strong),
+      0 30px 60px -20px rgb(0 0 0 / 0.8);
+
+    > * {
+      border-radius: 17px;
+    }
+  }
+}
+
+.caption {
+  @include label;
+  color: var(--color-text-subtle);
+}
+
+.aside {
+  display: grid;
+  gap: var(--space-6);
+  justify-items: start;
+}
+
+.asideTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-h3);
+  letter-spacing: -0.02em;
+
+  strong {
+    font-weight: 500;
+    color: var(--color-accent-hover);
+  }
+}
+
+.features {
+  display: grid;
+  gap: var(--space-3);
+  color: var(--color-text-muted);
+
+  li {
+    display: flex;
+    gap: var(--space-3);
+
+    &::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      margin-top: 0.6em;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: var(--color-success);
+    }
+  }
+}

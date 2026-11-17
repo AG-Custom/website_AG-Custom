@@ -1,0 +1,385 @@
+@use "mixins" as *;
+
+// ---------- Prova rápida ----------
+.proof {
+  padding-block: var(--space-8);
+  border-block: 1px solid var(--color-border);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6);
+
+  @include up(md) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  div {
+    display: flex;
+    flex-direction: column-reverse; // número em cima, legenda embaixo (dt continua antes de dd no HTML)
+    gap: var(--space-1);
+  }
+
+  dd {
+    font-family: var(--font-mono);
+    font-size: var(--text-h3);
+  }
+
+  dt {
+    font-size: var(--text-sm);
+    color: var(--color-text-subtle);
+  }
+}
+
+// ---------- Preço ----------
+.priceGrid {
+  display: grid;
+  gap: var(--space-8);
+
+  @include up(lg) {
+    grid-template-columns: 5fr 6fr;
+    align-items: start;
+    gap: var(--space-16);
+  }
+}
+
+.priceGrid .priceHeader {
+  margin-bottom: 0;
+
+  @include up(lg) {
+    position: sticky;
+    top: calc(var(--header-h) + var(--space-12));
+    grid-template-columns: 1fr;
+  }
+}
+
+.priceCard {
+  display: grid;
+  gap: var(--space-6);
+  padding: clamp(var(--space-6), 4vw, var(--space-12));
+  @include glass(base, $sheen: true);
+  @include glass-lift;
+}
+
+.priceTop {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.planName {
+  @include label;
+  color: var(--color-text-muted);
+}
+
+.setup {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.zero {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-full);
+  background: rgb(34 197 94 / 0.14);
+  box-shadow: inset 0 0 0 1px rgb(34 197 94 / 0.45);
+  color: var(--color-success);
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+// "R$ 0" entra com um pequeno salto quando o card aparece
+@include motion {
+  :global(.js) .priceCard .zero {
+    transform: scale(0.6);
+    opacity: 0;
+    transition:
+      transform 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 500ms,
+      opacity var(--duration-base) var(--ease-out) 500ms;
+  }
+
+  :global(.js) .priceCard[data-revealed] .zero,
+  :global(.reveal-fallback):not(:global(.reveal-ready)) .priceCard .zero {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.price {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  line-height: 1;
+}
+
+.currency {
+  font-size: var(--text-h3);
+  color: var(--color-text-muted);
+}
+
+.amount {
+  font-size: clamp(4rem, 12vw, 6.5rem);
+  letter-spacing: var(--tracking-tight);
+}
+
+.period {
+  font-size: var(--text-h3);
+  color: var(--color-text-muted);
+}
+
+.terms {
+  margin-top: calc(var(--space-4) * -1);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.included {
+  display: grid;
+  gap: var(--space-3);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+
+  li {
+    display: flex;
+    gap: var(--space-3);
+
+    &::before {
+      content: "";
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4.5 8.2 2.3 2.3 4.7-5'/%3E%3C/svg%3E")
+          center / 14px no-repeat,
+        rgb(34 197 94 / 0.85);
+    }
+  }
+}
+
+.notIncluded {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: rgb(255 255 255 / 0.04);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+
+  span {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+}
+
+.priceCard .priceCta {
+  width: 100%;
+  white-space: normal;
+  text-align: center;
+  padding-block: var(--space-3);
+}
+
+.priceNote {
+  margin-top: calc(var(--space-3) * -1);
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--color-text-subtle);
+}
+
+// ---------- Comparativo ----------
+.tableWrap {
+  overflow-x: auto;
+  @include glass(base);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+
+  @include up(md) {
+    font-size: var(--text-base);
+  }
+
+  th,
+  td {
+    padding: var(--space-4);
+    text-align: left;
+    vertical-align: top;
+
+    @include up(md) {
+      padding: var(--space-6);
+    }
+  }
+
+  thead th {
+    @include label;
+    color: var(--color-text-subtle);
+  }
+
+  tbody tr {
+    border-top: 1px solid var(--color-border);
+  }
+
+  tbody th {
+    font-weight: 400;
+    color: var(--color-text-muted);
+  }
+
+  td {
+    color: var(--color-text-subtle);
+  }
+
+  .ours {
+    color: var(--color-text);
+    font-weight: 500;
+    background: rgb(139 92 246 / 0.06);
+  }
+
+  thead .ours {
+    color: var(--color-accent-hover);
+  }
+}
+
+// ---------- Portfólio (marquee) ----------
+.showcase {
+  overflow: hidden;
+}
+
+.marquee {
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  gap: var(--space-6);
+  padding-right: var(--space-6); // mantém o espaçamento na emenda do loop
+
+  @include motion {
+    animation: offer-marquee 60s linear infinite;
+
+    &:hover {
+      animation-play-state: paused;
+    }
+  }
+
+  // sem movimento: vira uma faixa rolável
+  @media (prefers-reduced-motion: reduce) {
+    overflow-x: auto;
+    width: auto;
+    padding-inline: var(--gutter);
+  }
+}
+
+@keyframes offer-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.shot {
+  display: grid;
+  gap: var(--space-3);
+  width: 300px;
+  flex-shrink: 0;
+
+  @include up(md) {
+    width: 440px;
+  }
+}
+
+.shotImage {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  @include glass(subtle, $radius: var(--radius-md));
+
+  img {
+    object-fit: cover;
+    object-position: top;
+  }
+}
+
+.shotCaption {
+  @include label;
+  display: flex;
+  gap: var(--space-3);
+  color: var(--color-text-subtle);
+
+  strong {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+}
+
+// ---------- Garantias ----------
+.guarantees {
+  display: grid;
+  gap: var(--space-4);
+
+  @include up(md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.guarantee {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  padding: var(--space-8);
+  @include glass(base);
+
+  h3 {
+    font-size: var(--text-h3);
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    color: var(--color-text-muted);
+  }
+}
+
+// ---------- CTA final ----------
+.finalCard {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-6);
+  padding: clamp(var(--space-8), 6vw, var(--space-16)) clamp(var(--space-6), 4vw, var(--space-12));
+  text-align: center;
+  @include glass(base);
+
+  // brilho violeta no topo, por cima das camadas do vidro
+  & {
+    background:
+      radial-gradient(ellipse 80% 70% at 50% 0%, rgb(139 92 246 / 0.22), transparent 70%),
+      var(--glass-gloss), var(--glass-tint), var(--glass-bg);
+  }
+}
+
+.finalTitle {
+  font-size: var(--text-h2);
+  line-height: 1.1;
+  letter-spacing: var(--tracking-tight);
+  max-width: 18ch;
+}
+
+.finalLead {
+  font-size: var(--text-lg);
+  color: var(--color-text-muted);
+  max-width: 44ch;
+}
+
+.finalNote {
+  font-size: var(--text-sm);
+  color: var(--color-text-subtle);
+}
